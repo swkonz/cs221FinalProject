@@ -1,0 +1,41 @@
+Progress report spec and tasks are as follows:
+Overall, we need to run a few tests in order to get more preliminary results on impairment detection, and how well our initial feature extractor works. The feature extractor right now is simply detecting the approximate location of the user's pupils, and then writing the pupil coordinates to a file. The file format is as follows:
+- Each line contains the coordinates of the pupils for a single frame.
+- The line format is: LeftEye.x LeftEye.y RightEye.x RightEye.y
+In order to read the file, just read in the file with python, and read line-by-line, treating each line as a new frame in the video which provides the actual pupil locations. The text files attached are the extracted pupil locations for every video in the dataset. There are 191 videos in the dataset, so there are 191 txt files. Again, each line in the txt file contains the pupil locations of the user for a single frame in the video.
+
+With these pupil locations, we need to carry out a few tasks in order to gauge how good our feature extractor is:
+- Build explicit feature vectors for each video.
+        - This means we need to convert the text files to a list of precise feature vectors for each video instance.
+        - In order to do this, write a python script to read each txt file in the dataset, use the name of the file to determine if the file is a sober or intoxicated instance, then read all the contents of the file, computing the features for the video.
+        - The features for the video will be:
+              1. # of changes in sign of velocity
+              2.  Avg velocity, 
+              3. avg acceleration, 
+              4. avg distance from the center of the eye that the velocity change occurs (this will be 2 features, for left and right) ).
+
+All of these features should be trivial to compute except for number 4. For number 4 we'll need to decide on a consistent reference point on the face in order to gauge the distance from the center location. I think the best reference point to use would be the average position of the pupil. Since there are so many frames in each video the average location of the pupil should remain relatively consistent, so this should be a decent reference point for our purposes here.
+
+The logic behind extracting all the pupil locations from the videos was to pull the important information from the videos in order to reduce the size of our dataset from many hundred GB to only a few hundred Mb.
+
+From these feature vectors we'll run KNN and Kmeans. We want to run these clustering algorithms in order to see how well we're able to cluster the extracted features into their respective categories of intoxicated and sober.
+
+In addition to the above, I'll also be working on building out the advanced feature extractor in order to extract additional features from each video frame in order to provide access to more robust and accurate features of the eye movements.
+
+The learnings from the initial feature extraction, clustering, and then development of the advanced feature extractor, we should have plenty of information to talk about on the project progress report. We can include some screen captures of the pupil detection running on either one of us, We can include plots of the distributions of the extracted features for both intoxicated and sober videos, and we can include a link to a demo video that has already been created in order to show the difference in velocity accumulation between sober and intoxicated users. 
+
+For work distribution:
+Ben: 
+- Feature extractors from txt files
+- compile into feature vectors for each video and write into sober.txt and drunk.txt files so we can just read the feature vectors from each category when running the models.
+- Change the code from KMeans clustering in Assignment 1 to work with our input data
+- Help write project report
+
+Sean:
+- Write code for K-nearest neighbors clustering with our feature vectors
+- Write code to create plots of the feature distributions between sober and intoxicated
+- Write project report
+
+I'll work on the advanced feature extractor over break, but that won't be included in the project progress report.
+
+LMK if anything doesn't make sense
